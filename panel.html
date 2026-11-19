@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>🧪 [تجريبي] لوحة التجربة — بدل المندوب والأدمن</title>
+<style>
+:root{--ink:#EAF1FA;--mute:#93A6BD;--gold:#E9B949;--ok:#3DD598;--bad:#FF6B6B;--flame:#F2762E;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:#060D18;color:var(--ink);font-family:'Cairo','Segoe UI',Tahoma,sans-serif;font-size:14px}
+button,select,input{font-family:inherit;font-size:13px}button{cursor:pointer}
+a{color:#7CC4FF}
+.test{position:sticky;top:0;z-index:5;background:repeating-linear-gradient(135deg,#E9B949 0 14px,#D4A030 14px 28px);color:#1B1200;text-align:center;font-weight:900;padding:6px}
+.wrap{max-width:1100px;margin:0 auto;padding:14px}
+h1{font-size:19px;margin:6px 0}.sub{color:var(--mute);margin:0 0 12px;line-height:1.7}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}
+.c{background:#0B1626;border:1px solid #1E2F46;border-radius:16px;padding:12px}
+.c.cx{border-color:var(--bad)}
+.hd{display:flex;justify-content:space-between;gap:8px;align-items:center}.hd b{font-size:15px}
+.st{font-size:11.5px;border-radius:20px;padding:2px 9px;background:#16263B;color:var(--gold);flex:none}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:8px 0;font-size:12.5px}.kv span{color:var(--mute)}
+.ok{color:var(--ok)}.no{color:var(--mute)}
+.acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.acts button,.acts select,.acts a{background:#13243A;border:1px solid #27405F;color:var(--ink);border-radius:9px;padding:6px 9px;text-decoration:none}
+.acts .p{background:var(--flame);border-color:var(--flame);color:#1B0F05;font-weight:800}
+.acts .g{border-color:var(--ok);color:var(--ok)}.acts .r{border-color:var(--bad);color:var(--bad)}
+.ev{margin:8px 0 0;padding:0;list-style:none;font-size:11.5px;color:var(--mute)}.ev li{padding:2px 0}
+.box{background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.4);border-radius:10px;padding:8px;margin-top:8px}
+.top{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.top button{background:#13243A;border:1px solid #27405F;color:var(--ink);border-radius:9px;padding:7px 12px}
+.toast{position:fixed;bottom:20px;left:50%;translate:-50% 0;background:#13243A;border:1px solid #27405F;border-radius:10px;padding:9px 14px;display:none}.toast.on{display:block}
+</style>
+</head>
+<body>
+<div class="test">🧪 نسخة تجريبية — لوحة التجربة بدل تطبيق المندوب والأدمن — بيانات وهمية</div>
+<div class="wrap">
+  <h1>لوحة التجربة</h1>
+  <p class="sub">افتح صفحة العميل لأي شحنة من «افتح صفحة العميل» (يفضّل من موبايلك)، واعمل اللي العميل بيعمله. بعدين ارجع هنا وشوف اللي وصل، وغيّر حالة الشحنة زي المندوب والأدمن. الصفحتين بيتحدّثوا لوحدهم.</p>
+  <div class="top"><button id="rf">🔄 تحديث</button><button id="rs">♻️ رجّع البيانات التجريبية من الأول</button></div>
+  <div class="grid" id="g">بيحمّل…</div>
+</div>
+<div class="toast" id="t"></div>
+<script src="config.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ST={warehouse:'في المخزن',with_courier:'مع المندوب',with_carrier:'مع شريك توصيل',postponed:'اتأجّلت',delivered:'اتسلّمت',partial:'اتسلّم جزء',returned:'رجعت',return_pending:'راجعة للتاجر',lost:'فيها مشكلة'};
+let P=null;
+function toast(x){const e=$('t');e.textContent=x;e.className='toast on';clearTimeout(e._t);e._t=setTimeout(()=>e.className='toast',2200);}
+async function act(fn,args,m){ try{ await rpc(fn,args); toast(m||'تم'); load(); }catch(e){ toast('❌ '+e.message); } }
+function link(o){ return location.href.replace(/panel\.html.*$/,'')+'?k='+o.token; }
+async function load(){ try{ P=await rpc('test_panel'); draw(); }catch(e){ $('g').textContent='❌ '+e.message; } }
+function draw(){
+  $('g').innerHTML=(P.orders||[]).map(o=>{
+    const tag=[o.is_exchange?'🔄 استبدال':'',o.paid_direct?'💳 مدفوعة':'',o.items_total>1?'📦 '+o.items_total+' قطع':''].filter(Boolean).join(' · ');
+    return '<div class="c'+(o.cancel==='pending'?' cx':'')+'"><div class="hd"><b>'+esc(o.code)+' · '+esc(o.customer)+'</b><span class="st">'+(ST[o.status]||o.status)+'</span></div>'+
+    '<div class="no" style="font-size:12px">'+esc(o.company)+' · '+o.cod+' ج (شحن '+o.ship+')'+(tag?' · '+tag:'')+'</div>'+
+    '<div class="kv"><span>المندوب</span><b>'+esc(o.courier||'—')+'</b>'+
+    '<span>أكّد؟</span><b class="'+(o.confirmed?'ok':'no')+'">'+(o.confirmed?'✓ أكّد الاستلام (اتقفلت)':'لسه')+'</b>'+
+    '<span>المكان</span><b>'+(o.loc?esc(o.loc)+' — <a href="https://www.google.com/maps?q='+o.lat+','+o.lng+'" target="_blank" rel="noopener">افتح في الخرايط ←</a>':'<span class="no">—</span>')+'</b>'+
+    '<span>الميعاد</span><b>'+esc(o.slot||'—')+'</b><span>تعليمات</span><b>'+esc(o.note||'—')+'</b>'+
+    '<span>رقم تاني</span><b>'+(o.phone2?esc(o.phone2)+(o.phone2_name?' ('+esc(o.phone2_name)+')':''):'—')+'</b>'+
+    (o.rating||o.feedback?'<span>رأيه</span><b>'+(o.rating?'★'.repeat(o.rating):'')+' '+esc(o.feedback||'')+'</b>':'')+'</div>'+
+    (o.cancel==='pending'?'<div class="box">🛑 <b>طلب إلغاء:</b> '+esc(o.cancel_reason)+'<div class="acts"><button class="g" data-a="go" data-c="'+o.code+'">كمّل التوصيل</button><button class="r" data-a="cx" data-c="'+o.code+'">ألغي ورجّع للتاجر</button></div></div>':'')+
+    '<div class="acts"><a class="p" href="'+link(o)+'" target="_blank" rel="noopener">افتح صفحة العميل ↗</a><button data-a="copy" data-c="'+o.code+'">انسخ رسالة الواتساب</button></div>'+
+    '<div class="acts"><select data-s="'+o.code+'"><option value="">— غيّر الحالة —</option><option value="delivered">اتسلّمت (دفع كله)</option><option value="partial">اتسلّم جزء</option><option value="postponed">اتأجّلت</option><option value="retship">رجعت — دفع الشحن بس</option><option value="returned">رجعت — مادفعش</option><option value="lost">فيها مشكلة</option><option value="with_carrier">مع شريك توصيل</option></select>'+
+    '<button data-a="store" data-c="'+o.code+'">رجّعها المخزن</button><select data-k="'+o.code+'"><option value="">اطلعها مع…</option>'+(P.couriers||[]).map(k=>'<option value="'+k.id+'">'+esc(k.name)+'</option>').join('')+'</select>'+
+    '<button data-a="age" data-c="'+o.code+'">⏩ عدّي ٣ أيام</button></div>'+
+    '<ul class="ev">'+(o.events||[]).map(x=>'<li>• '+esc(x)+'</li>').join('')+'</ul></div>';
+  }).join('');
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button[data-a]'); if(!b) return; const c=b.dataset.c, o=P.orders.find(x=>x.code===c);
+  if(b.dataset.a==='go') act('test_cancel_decide',{p_code:c,p_go:true},'هنكمّل التوصيل');
+  if(b.dataset.a==='cx') act('test_cancel_decide',{p_code:c,p_go:false},'اتلغت');
+  if(b.dataset.a==='store') act('test_back_to_store',{p_code:c},'رجعت المخزن');
+  if(b.dataset.a==='age') act('test_age',{p_code:c},'عدّى ٣ أيام (لو الشحنة خلصت، اللينك هيقفل)');
+  if(b.dataset.a==='copy'){ const m='👋 أهلاً أ/ '+o.customer.split(' ')[0]+'\n📦 شحنتك من '+o.company+' خرجت مع المندوب '+(o.courier||'')+'\n💰 المبلغ: '+o.cod+' ج\n🚚 التوصيل: خلال اليوم\n\n👇 حدّد مكان التسليم وأكّد الاستلام من هنا:\n'+link(o)+'\n\n🐉 Dragon Express [تجريبي]';
+    navigator.clipboard.writeText(m).then(()=>toast('الرسالة اتنسخت'),()=>prompt('انسخ الرسالة:',m)); }
+});
+document.addEventListener('change',e=>{
+  const s=e.target; if(!s.value) return;
+  if(s.dataset.s){ const c=s.dataset.s, o=P.orders.find(x=>x.code===c), v=s.value;
+    if(v==='partial'){ const n=prompt('استلم كام قطعة من '+o.items_total+'؟','1'); if(n===null) return; const m=prompt('دفع كام جنيه؟',String(Math.round(o.cod/2))); if(m===null) return;
+      act('test_set_status',{p_code:c,p_status:'partial',p_collected:+m||0,p_items:+n||0},'اتسلّم جزء'); }
+    else if(v==='retship') act('test_set_status',{p_code:c,p_status:'returned',p_collected:o.ship},'رجعت ودفع الشحن');
+    else act('test_set_status',{p_code:c,p_status:v},'الحالة اتغيّرت');
+  }
+  if(s.dataset.k) act('test_assign',{p_code:s.dataset.k,p_courier:s.value},'خرجت مع المندوب');
+});
+$('rf').onclick=load;
+$('rs').onclick=()=>{ if(confirm('ترجّع كل البيانات التجريبية من الأول؟ (كله وهمي)')) act('test_seed',{},'رجعت من الأول — اللينكات اتغيّرت'); };
+load(); setInterval(()=>{ if(!document.hidden && !(document.activeElement&&document.activeElement.tagName==='SELECT')) load(); },10000);
+</script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>🧪 [تجريبي] شحنتك — Dragon Express</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+:root{--night:#060D18;--ink:#EAF1FA;--mute:#93A6BD;--flame:#F2762E;--gold:#E9B949;--ok:#3DD598;--bad:#FF6B6B;--info:#5AB0FF;
+--glass:rgba(255,255,255,.07);--glass-b:rgba(255,255,255,.14);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--night);color:var(--ink);font-family:'Cairo','Segoe UI',Tahoma,sans-serif}
+body{min-height:100vh;background:radial-gradient(120% 50% at 50% 0%,rgba(242,118,46,.16),transparent 60%),var(--night)}
+button,input,textarea,select{font-family:inherit;font-size:15px}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.test{position:sticky;top:0;z-index:50;background:repeating-linear-gradient(135deg,#E9B949 0 14px,#D4A030 14px 28px);color:#1B1200;text-align:center;font-weight:900;font-size:13px;padding:6px}
+.wrap{max-width:460px;margin:0 auto;padding:16px 14px 40px;display:flex;flex-direction:column;gap:12px}
+#app{display:flex;flex-direction:column;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:44px;height:44px;border-radius:50%}
+.brand b{font-size:17px;font-weight:900}.brand small{display:block;color:var(--mute);font-size:11.5px;direction:ltr;text-align:right}
+.hi{font-size:19px;font-weight:800}.hi span{color:var(--gold)}
+.card{background:var(--glass);border:1px solid var(--glass-b);border-radius:18px;padding:13px 14px}
+.row{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:5px 0}
+.row span{color:var(--mute)}.row b{text-align:left}
+.amt b{font-size:18px;color:var(--gold)}.amt em{display:block;font-style:normal;font-size:11.5px;color:var(--mute);font-weight:600}
+.banner{border-radius:14px;padding:11px 13px;font-size:13.5px;line-height:1.75}
+.y{background:rgba(233,185,73,.12);border:1px solid rgba(233,185,73,.4);color:#F5DC9C}
+.r{background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.4);color:#FFC2C2}
+.i{background:rgba(90,176,255,.1);border:1px solid rgba(90,176,255,.4);color:#BFE0FF}
+.g{background:rgba(61,213,152,.1);border:1px solid rgba(61,213,152,.4);color:#B8F3DA}
+.courier{display:flex;align-items:center;gap:10px}
+.courier .av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--flame),var(--gold));display:grid;place-items:center;font-weight:900;color:#1B0F05}
+.courier div{flex:1}.courier small{display:block;color:var(--mute);direction:ltr;text-align:right}
+.call{background:rgba(61,213,152,.14);border:1px solid rgba(61,213,152,.45);color:var(--ok);border-radius:12px;padding:8px 13px;font-weight:800;text-decoration:none;font-size:13.5px}
+.sec{font-size:13.5px;font-weight:800;color:var(--gold);margin:6px 2px -4px}.sec small{color:var(--mute);font-weight:600}
+.opt{display:flex;align-items:center;gap:10px}
+.opt>div{flex:1;min-width:0}.opt small{display:block;color:var(--mute);font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+.opt.set{border-color:rgba(61,213,152,.45);background:rgba(61,213,152,.06)}
+.tag{font-size:10.5px;color:var(--mute);border:1px solid var(--glass-b);border-radius:20px;padding:0 7px;margin-inline-start:4px}
+.req{font-size:10.5px;font-weight:800;color:#1B0F05;background:var(--flame);border-radius:20px;padding:1px 8px;margin-inline-start:4px}
+.link{background:none;border:1px solid var(--glass-b);color:var(--ink);border-radius:10px;padding:6px 12px;font-size:13px;font-weight:800;flex:none}
+.lk{color:var(--mute);font-size:12px;flex:none}
+.btn{width:100%;border:0;border-radius:14px;padding:14px;font-size:15px;font-weight:800}
+.b-ok{background:var(--ok);color:#06251A}.b-flame{background:var(--flame);color:#1B0F05}
+.b-ghost{background:var(--glass);border:1px solid var(--glass-b);color:var(--ink)}
+.b-bad{background:transparent;border:1px solid rgba(255,107,107,.45);color:var(--bad)}.b-badx{background:var(--bad);color:#2A0606}
+.btn:disabled{opacity:.5}
+.hint{font-size:12px;color:var(--mute);text-align:center;margin:6px 0 0;line-height:1.7}
+.danger{margin-top:14px;padding-top:14px;border-top:1px dashed rgba(255,107,107,.3);text-align:center}
+.danger p{margin:0 0 8px;font-size:12.5px;color:var(--mute)}
+.cx{background:none;border:1px solid rgba(255,107,107,.4);color:var(--bad);border-radius:10px;padding:8px 18px;font-size:13px;font-weight:800}
+.hero{text-align:center;padding:22px 14px}.hero .em{font-size:44px}.hero h2{margin:8px 0 4px;font-size:20px}.hero p{margin:0;color:var(--mute);font-size:13.5px;line-height:1.75}
+.ev{list-style:none;margin:0;padding:0;font-size:12.5px;color:var(--mute)}.ev li{padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05)}.ev b{color:var(--ink);font-weight:700}
+.stars{display:flex;gap:6px;justify-content:center;margin:6px 0}
+.stars button{background:none;border:0;font-size:32px;color:#3A4A60;padding:0 2px}.stars button.on{color:var(--gold)}
+textarea,input[type=text],input[type=tel]{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--glass-b);border-radius:12px;color:var(--ink);padding:11px;margin:6px 0 10px}
+textarea{min-height:84px;resize:vertical}
+.lbl{display:block;font-size:12.5px;color:var(--mute);margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0 10px}
+.chip{background:var(--glass);border:1px solid var(--glass-b);color:var(--ink);border-radius:20px;padding:7px 12px;font-size:13px}
+.chip[aria-pressed=true]{border-color:var(--gold);color:var(--gold);background:rgba(233,185,73,.1)}
+.chip:disabled{opacity:.4}
+.ft{display:flex;gap:8px;align-items:center;margin:6px 0 12px}.ft select{flex:1;background:#0E1A2B;color:var(--ink);border:1px solid var(--glass-b);border-radius:12px;padding:10px}
+.sheet-bg{position:fixed;inset:0;background:rgba(2,6,12,.6);z-index:60;display:none}
+.sheet{position:fixed;inset-inline:0;bottom:0;z-index:61;max-width:520px;margin:0 auto;background:#0E1A2B;border-radius:22px 22px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto;display:none}
+.open .sheet,.open .sheet-bg{display:block}
+.sheet h3{margin:0 0 4px;font-size:17px}.sheet p{margin:0 0 12px;color:var(--mute);font-size:13px;line-height:1.7}
+.sum{display:grid;gap:6px;margin:4px 0 12px}.sum div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04)}
+.sum span{color:var(--mute);flex:none}.sum b{text-align:left;overflow-wrap:anywhere}
+#map{height:300px;border-radius:14px;position:relative;margin:6px 0 10px}
+.pin{position:absolute;left:50%;top:50%;z-index:500;width:34px;height:44px;margin:-44px 0 0 -17px;pointer-events:none}
+.sg button{display:block;width:100%;text-align:start;background:none;border:0;border-bottom:1px solid rgba(255,255,255,.06);color:var(--ink);padding:9px 4px;font-size:13.5px}
+.gps{margin-bottom:8px}
+.toast{position:fixed;left:50%;bottom:24px;translate:-50% 0;z-index:80;background:#13243A;border:1px solid var(--glass-b);border-radius:12px;padding:10px 16px;font-size:13.5px;font-weight:700;display:none;max-width:90vw}
+.toast.on{display:block}.toast.bad{border-color:var(--bad);color:#FFC2C2}
+.skel{height:120px;border-radius:18px;background:rgba(255,255,255,.06)}
+</style>
+</head>
+<body>
+<div class="test">🧪 نسخة تجريبية — بيانات وهمية — مش للعملاء</div>
+<div class="wrap">
+  <div class="brand"><img src="logo.webp" alt=""><div><b>Dragon Express <span style="color:var(--gold);font-size:12px">[تجريبي]</span></b><small id="code"></small></div></div>
+  <div id="app"><div class="skel"></div><div class="skel"></div></div>
+</div>
+<div id="sh"><div class="sheet-bg" id="shBg"></div><div class="sheet" role="dialog" aria-modal="true"><div id="shBody"></div></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="config.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const tok=new URLSearchParams(location.search).get('k')||'';
+let D=null, busy=false;
+const fmt=n=>Number(n||0).toLocaleString('ar-EG');
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const hl=h=>{h=+h;return fmt(h>12?h-12:h)+(h<12?' الصبح':h<15?' الضهر':h<18?' العصر':' بالليل');};
+function dayLbl(d){ const k=Math.round((new Date(d)-new Date(D.today))/864e5); return ['النهاردة','بكرة','بعد بكرة'][k]||d; }
+const slotTxt=s=>s?dayLbl(s.day)+' من '+hl(s.from)+' لـ'+hl(s.to):'';
+function toast(t,bad){const e=$('toast');e.textContent=t;e.className='toast on'+(bad?' bad':'');clearTimeout(e._t);e._t=setTimeout(()=>e.className='toast',2800);}
+function sheet(html,after){$('shBody').innerHTML=html;$('sh').className='open';if(after)after();}
+function close(){$('sh').className='';}
+$('shBg').onclick=close; document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+
+async function call(fn,args,okMsg){
+  if(busy) return; busy=true;
+  try{ const r=await rpc(fn,args); if(r&&r.state) D=r; close(); render(); if(okMsg) toast(okMsg); }
+  catch(e){ toast(e.message,true); }
+  finally{ busy=false; }
+}
+async function load(){
+  try{ D=await rpc('rpc_track_get',{p_token:tok}); render(); }
+  catch(e){ $('app').innerHTML='<div class="card hero"><div class="em">📶</div><h2>مش قادرين نفتح الصفحة</h2><p>اتأكد من النت وجرّب تاني.</p></div>'; }
+}
+function msg(em,t,p,extra){ return '<div class="card hero"><div class="em">'+em+'</div><h2>'+t+'</h2><p>'+p+'</p></div>'+(extra||''); }
+function events(){ if(!D.events||!D.events.length) return ''; return '<div class="card"><b style="font-size:13.5px">اللي حصل</b><ul class="ev">'+D.events.map(e=>'<li><b>'+esc(e.txt)+'</b> · '+new Date(e.at).toLocaleString('ar-EG',{weekday:'short',hour:'numeric',minute:'2-digit'})+'</li>').join('')+'</ul></div>'; }
+function supportBtn(){ return '<a class="btn b-ghost" style="display:block;text-align:center;text-decoration:none" href="tel:'+D.support+'">كلّم خدمة العملاء</a>'; }
+function amount(){ return '<div class="card"><div class="row amt"><span>المبلغ المطلوب</span><b>'+fmt(D.due)+' ج<em>'+esc(D.due_note)+'</em></b></div><div class="row"><span>من</span><b>'+esc(D.company)+'</b></div><div class="row"><span>فتح الشحنة</span><b>مسموح قبل الدفع</b></div></div>'; }
+function optRow(k,t,sub,set,editable,req){
+  return '<div class="card opt'+(set?' set':'')+'"><div><span>'+t+'</span>'+(req?(!set&&editable?'<span class="req">مطلوب</span>':''):'<span class="tag">اختياري</span>')+'<small>'+sub+'</small></div>'+
+    (editable?'<button class="link" id="e-'+k+'">'+(set?'غيّر':(k==='loc'?'حدّد':'ضيف'))+'</button>':((D.confirmed||D.cancel_pending)?'<span class="lk">🔒</span>':''))+'</div>';
+}
+
+function render(){
+  const s=D.state; $('code').textContent=D.code||'';
+  if(s==='bad'){ $('app').innerHTML=msg('🔗','اللينك مش شغّال','اتأكد إنك فتحت اللينك كامل زي ما وصلك في الرسالة.'); return; }
+  if(s==='expired'){ $('app').innerHTML=msg('🔒','اللينك ده خلص','عدّى ٣ أيام على الشحنة، فاللينك قفل لوحده عشان بياناتك تفضل محفوظة.'); return; }
+  let h='<div class="hi">أهلاً أ/ <span>'+esc(D.name)+'</span></div>';
+  const paidRow=v=>'<div class="card"><div class="row"><span>اتدفع</span><b>'+v+'</b></div><div class="row"><span>من</span><b>'+esc(D.company)+'</b></div></div>';
+  if(s==='delivered'||s==='partial'){
+    h+=msg('✅', s==='partial'?'اتسلّم جزء من الشحنة':'اتسلّمت', s==='partial'?'استلمت '+fmt(D.items_delivered||0)+' من '+fmt(D.items_total)+'، والباقي راجع لـ'+esc(D.company)+'.':'شكرًا إنك اخترت '+esc(D.company)+'.');
+    h+=paidRow(fmt(D.collected)+' ج')+rateBox()+'<p class="hint">🔒 اللينك ده هيقفل لوحده بعد ٣ أيام</p>';
+    $('app').innerHTML=h; bindRate(); return;
+  }
+  if(s==='returned'){ $('app').innerHTML=h+msg('↩️','الشحنة رجعت للتاجر', D.collected>0?'الشحنة ما اتسلّمتش، ودفعت مصاريف التوصيل بس.':'الشحنة ما اتسلّمتش ورجعت لـ'+esc(D.company)+'.', paidRow(D.collected>0?fmt(D.collected)+' ج (التوصيل)':'مفيش'))+supportBtn(); return; }
+  if(s==='cancelled'){ $('app').innerHTML=h+msg('🛑','الشحنة اتلغت','اتلغت بناءً على طلبك ورجعت لـ'+esc(D.company)+'. ماتحتاجش تعمل حاجة.'); return; }
+  if(s==='problem'){ $('app').innerHTML=h+msg('⏳','فيه تأخير في شحنتك','فريقنا بيتابع الشحنة وهيكلّمك قريب. مش هتدفع حاجة غير لما تستلم.')+supportBtn(); return; }
+  if(s==='carrier'){ $('app').innerHTML=h+msg('🚛','شحنتك مع شريك التوصيل','اتسلّمت لشركة شحن شريكة في محافظتك، وهتوصلك خلال ١–٣ أيام.')+amount()+supportBtn()+events(); return; }
+
+  // ── قبل التسليم: store / way / postponed ──
+  h+='<div style="font-size:15px;color:var(--mute);margin-top:-8px">'+(s==='store'?'شحنتك عندنا وهتخرج قريب':s==='postponed'?'شحنتك اتأجّلت':'شحنتك جاية لك')+'</div>';
+  if(D.cancel_pending) h+='<div class="banner r">⏸️ طلب الإلغاء وصل للإدارة، وهيكلّموك قريب. الشحنة واقفة لحد ما تتفقوا.</div>';
+  else if(D.can_edit_slot && D.confirmed) h+='<div class="banner y">📅 '+(s==='postponed'?'الشحنة اتأجّلت':'الشحنة رجعت المخزن وهتخرج تاني')+'. اختار ميعاد جديد من «ميعاد التوصيل» تحت. باقي بياناتك زي ما هي.</div>';
+  if(D.is_exchange) h+='<div class="banner i">🔄 دي شحنة <b>استبدال</b>: المندوب هيسلّمك الجديدة ويستلم منك <b>'+fmt(D.pickup_qty)+' قطعة</b>. جهّزهم قبل ما يوصل.</div>';
+  if(D.paid_direct) h+='<div class="banner g">💳 المنتج مدفوع قبل كده. هتدفع للمندوب التوصيل بس.</div>';
+  h+=amount();
+  if(D.courier) h+='<div class="card courier"><div class="av">'+esc(D.courier.name[0])+'</div><div><b>'+esc(D.courier.name)+'</b><small>'+esc(D.courier.phone)+'</small></div><a class="call" href="tel:'+esc(D.courier.phone)+'">اتصل</a></div>';
+  const ed=D.can_edit, es=D.can_edit_slot;
+  h+='<div class="sec">'+(D.confirmed?'بياناتك <small>اتأكدت واتقفلت 🔒</small>':'كمّل بياناتك الأول <small>وبعدين أكّد الاستلام تحت</small>')+'</div>';
+  h+=optRow('loc','١. مكان التسليم', D.loc?esc(D.loc.text||'اتحدّد على الخريطة'):'مش لازم تكون في البيت. حدّد المكان بموقعك أو بالبحث أو بالدبوس.', !!D.loc, ed, true);
+  h+=optRow('slot','٢. ميعاد التوصيل', D.slot?slotTxt(D.slot):'خلال اليوم — لو مش هتبقى موجود اختار ميعاد', !!D.slot, es);
+  h+=optRow('note','٣. تعليمات للمندوب', D.note?esc(D.note):'زي: كلّمني قبل ما توصل، أو سيبها مع البواب', !!D.note, ed);
+  h+=optRow('ph2','٤. رقم تاني للتواصل', D.phone2?esc(D.phone2)+(D.phone2_name?' ('+esc(D.phone2_name)+')':''):'لو موبايلك مقفول، المندوب يكلّم الرقم ده', !!D.phone2, ed);
+  if(D.can_confirm) h+='<div><button class="btn b-ok" id="bYes">✓ تأكيد الاستلام</button><p class="hint">بعد التأكيد البيانات اللي فوق بتتقفل ومش هتتعدّل.<br>اتأكد إن المكان والرقم صح.</p></div>';
+  else if(D.confirmed) h+='<div class="card g" style="text-align:center"><b>✓ أكّدت الاستلام</b><p class="hint" style="margin-top:4px">لو محتاج تغيّر حاجة، كلّم المندوب.</p></div>';
+  if(D.can_cancel) h+='<div class="danger"><p>مش عايز الشحنة خالص؟</p><button class="cx" id="bNo">الغي الشحنة</button></div>';
+  h+=events();
+  $('app').innerHTML=h;
+  const b=(id,f)=>{const e=$(id); if(e) e.onclick=f;};
+  b('e-loc',locSheet); b('e-slot',slotSheet); b('e-note',noteSheet); b('e-ph2',ph2Sheet); b('bYes',confirmSheet); b('bNo',cancelSheet);
+}
+
+// ── مكان التسليم: OpenStreetMap مجاني ──
+function locSheet(){
+  sheet('<h3>فين نسلّمك الشحنة؟</h3><p>حرّك الخريطة لحد ما الدبوس ييجي على المكان، أو ابحث، أو استخدم موقعك.</p>'+
+    '<button class="btn b-ghost gps" id="gps">📍 استخدم موقعي الحالي</button>'+
+    '<input type="text" id="q" placeholder="ابحث: الشارع، المنطقة" autocomplete="off"><div class="sg" id="sg"></div>'+
+    '<div id="map"><svg class="pin" viewBox="0 0 24 30"><path d="M12 29s10-9 10-17a10 10 0 0 0-20 0c0 8 10 17 10 17z" fill="#F2762E" stroke="#fff" stroke-width="1.5"/><circle cx="12" cy="12" r="3.5" fill="#fff"/></svg></div>'+
+    '<button class="btn b-flame" id="pOk">أكّد المكان ده</button>', ()=>{
+    const c=D.loc?[D.loc.lat,D.loc.lng]:[30.0444,31.2357];
+    const m=L.map('map').setView(c,D.loc?17:12);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(m);
+    setTimeout(()=>m.invalidateSize(),60);
+    $('gps').onclick=()=>{ if(!navigator.geolocation){toast('الموبايل مش بيدعم تحديد الموقع',true);return;}
+      $('gps').textContent='بنحدّد موقعك…';
+      navigator.geolocation.getCurrentPosition(p=>{m.setView([p.coords.latitude,p.coords.longitude],17);$('gps').textContent='📍 استخدم موقعي الحالي';},
+        ()=>{toast('مش قادرين نحدد موقعك، جرّب البحث أو حرّك الخريطة',true);$('gps').textContent='📍 استخدم موقعي الحالي';},{enableHighAccuracy:true,timeout:10000}); };
+    let tm; $('q').oninput=function(){ clearTimeout(tm); const v=this.value.trim(); if(v.length<3){$('sg').innerHTML='';return;}
+      tm=setTimeout(async()=>{ try{ const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&countrycodes=eg&accept-language=ar&limit=5&q='+encodeURIComponent(v)); const j=await r.json();
+        $('sg').innerHTML=j.length?'':'<p class="hint">مفيش نتايج، جرّب كلمة تانية أو حرّك الخريطة</p>';
+        j.forEach(x=>{const bt=document.createElement('button');bt.textContent=x.display_name;bt.onclick=()=>{m.setView([+x.lat,+x.lon],17);$('sg').innerHTML='';};$('sg').appendChild(bt);});
+      }catch(e){} },700); };
+    $('pOk').onclick=async()=>{ const p=m.getCenter(); let txt='مكان على الخريطة';
+      $('pOk').disabled=true; $('pOk').textContent='لحظة…';
+      try{ const r=await fetch('https://nominatim.openstreetmap.org/reverse?format=json&zoom=18&accept-language=ar&lat='+p.lat+'&lon='+p.lng); const j=await r.json();
+        if(j&&j.display_name) txt=j.display_name.split(/[،,]/).slice(0,3).join('،'); }catch(e){}
+      await call('rpc_track_update',{p_token:tok,p:{loc_lat:+p.lat.toFixed(6),loc_lng:+p.lng.toFixed(6),loc_text:txt}},'المكان وصل للمندوب');
+      const b=$('pOk'); if(b){b.disabled=false;b.textContent='أكّد المكان ده';} };
+  });
+}
+function slotSheet(){
+  const days=[0,1,2].map(i=>{const d=new Date(D.today+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+i);return d.toISOString().slice(0,10);});
+  let day=days[0];
+  const opts=(a,b,sel)=>{let o='';for(let x=a;x<=b;x++)o+='<option value="'+x+'"'+(x===sel?' selected':'')+'>'+hl(x)+'</option>';return o;};
+  sheet('<h3>عايزها إمتى؟</h3><p>اختار اليوم والوقت اللي تكون فيه موجود (لحد يومين).</p>'+
+    '<div class="chips" id="dd">'+days.map((d,i)=>'<button class="chip" aria-pressed="false" data-v="'+d+'">'+['النهاردة','بكرة','بعد بكرة'][i]+'</button>').join('')+'</div>'+
+    '<div class="ft"><select id="hf" aria-label="من الساعة"></select><span>لـ</span><select id="ht" aria-label="لحد الساعة"></select></div>'+
+    '<button class="btn b-flame" id="sOk">أكّد الميعاد</button>',()=>{
+    const chips=[...document.querySelectorAll('#dd .chip')];
+    const fill=()=>{ const min=day===days[0]?Math.max(10,D.hour+1):10;
+      $('hf').innerHTML=opts(min,21,Math.min(Math.max(min,16),21)); $('ht').innerHTML=opts(min+1,22,Math.min(Math.max(min+3,19),22));
+      chips.forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.v===day))); };
+    if(Math.max(10,D.hour+1)>21){ chips[0].disabled=true; day=days[1]; }
+    fill();
+    chips.forEach(c=>c.onclick=()=>{ if(c.disabled) return; day=c.dataset.v; fill(); });
+    $('sOk').onclick=()=>{const f=+$('hf').value,t=+$('ht').value; if(t<=f){toast('«لحد الساعة» لازم تكون بعد «من الساعة»',true);return;}
+      call('rpc_track_update',{p_token:tok,p:{slot_day:day,slot_from:f,slot_to:t}},'الميعاد وصل للمندوب');};
+  });
+}
+function noteSheet(){
+  sheet('<h3>تعليمات للمندوب</h3><p>هتظهر له على الشحنة بتاعتك.</p><div class="chips" id="nq"><button class="chip">كلّمني قبل ما توصل</button><button class="chip">سيبها مع البواب</button><button class="chip">رن الجرس مرتين</button></div>'+
+    '<textarea id="nt" maxlength="300" placeholder="البيت جنب صيدلية النور، الباب الأخضر">'+esc(D.note||'')+'</textarea><button class="btn b-flame" id="nOk">احفظ</button>',()=>{
+    document.querySelectorAll('#nq .chip').forEach(c=>c.onclick=()=>{const t=$('nt');t.value=(t.value?t.value+' · ':'')+c.textContent;});
+    $('nOk').onclick=()=>call('rpc_track_update',{p_token:tok,p:{note:$('nt').value}},'التعليمات وصلت للمندوب');
+  });
+}
+function ph2Sheet(){
+  sheet('<h3>رقم تاني للتواصل</h3><p>لو موبايلك مقفول، المندوب والإدارة يكلّموا الرقم ده.</p>'+
+    '<label class="lbl" for="p2">رقم الموبايل</label><input type="tel" id="p2" dir="ltr" inputmode="tel" placeholder="01x xxxx xxxx" value="'+esc(D.phone2||'')+'">'+
+    '<label class="lbl" for="p2n">صاحب الرقم (اختياري)</label><input type="text" id="p2n" maxlength="40" placeholder="مثلاً: أخويا أحمد" value="'+esc(D.phone2_name||'')+'">'+
+    '<button class="btn b-flame" id="pOk2">احفظ الرقم</button>',()=>{
+    $('pOk2').onclick=()=>{const v=$('p2').value.replace(/\s/g,''); if(v&&!/^01[0125]\d{8}$/.test(v)){toast('اكتب رقم موبايل صح: ١١ رقم ويبدأ بـ01',true);return;}
+      call('rpc_track_update',{p_token:tok,p:{phone2:v,phone2_name:$('p2n').value}},'الرقم اتحفظ');};
+  });
+}
+function confirmSheet(){
+  if(!D.loc){ sheet('<h3>فاضل مكان التسليم</h3><p>ده الحاجة الوحيدة المطلوبة عشان المندوب يوصل لك من غير ما يتوه.</p><button class="btn b-flame" id="gl">حدّد المكان</button>',()=>{$('gl').onclick=()=>{close();setTimeout(locSheet,50);};}); return; }
+  const v=(x,e)=>x?'<b>'+esc(x)+'</b>':'<b style="color:var(--mute);font-weight:600">'+e+'</b>';
+  sheet('<h3>راجع قبل ما تأكّد</h3><p>بعد التأكيد مش هتقدر تعدّل البيانات دي من الصفحة.</p><div class="sum">'+
+    '<div><span>المكان</span>'+v(D.loc.text,'—')+'</div><div><span>الميعاد</span>'+v(D.slot&&slotTxt(D.slot),'خلال اليوم')+'</div>'+
+    '<div><span>التعليمات</span>'+v(D.note,'مفيش')+'</div><div><span>رقم تاني</span>'+v(D.phone2,'مفيش')+'</div></div>'+
+    '<button class="btn b-ok" id="cOk">أيوه، أكّد الاستلام</button><button class="btn b-ghost" id="cBack" style="margin-top:8px">ارجع عدّل</button>',()=>{
+    $('cBack').onclick=close; $('cOk').onclick=()=>call('rpc_track_confirm',{p_token:tok},'تمام، المندوب عرف إنك مستنيه');
+  });
+}
+function cancelSheet(){
+  let why='';
+  sheet('<h3>عايز تلغي الشحنة؟</h3><p>قولّنا السبب. الإلغاء مش بيحصل على طول: الإدارة هتكلّمك قبل أي حاجة.</p>'+
+    '<div class="chips" id="rq">'+['غيّرت رأيي','طلبتها بالغلط','السعر مختلف','اتأخرت عليّا','سبب تاني'].map(x=>'<button class="chip" aria-pressed="false">'+x+'</button>').join('')+'</div>'+
+    '<textarea id="ow" maxlength="180" placeholder="اكتب السبب (اختياري)" style="display:none"></textarea>'+
+    '<button class="btn b-ghost" id="rBack">لأ، أنا عايزها</button><button class="btn b-bad" id="rOk" style="margin-top:8px">كمّل الإلغاء</button>',()=>{
+    document.querySelectorAll('#rq .chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#rq .chip').forEach(x=>x.setAttribute('aria-pressed','false'));c.setAttribute('aria-pressed','true');why=c.textContent;$('ow').style.display=why==='سبب تاني'?'block':'none';});
+    $('rBack').onclick=close;
+    $('rOk').onclick=()=>{ if(!why){toast('اختار السبب الأول',true);return;}
+      const full=why+(why==='سبب تاني'&&$('ow').value.trim()?': '+$('ow').value.trim():'');
+      sheet('<h3>متأكد؟</h3><p>لو بعتّ طلب الإلغاء، المندوب هيوقف الشحنة لحد ما الإدارة تكلّمك.</p><div class="sum"><div><span>السبب</span><b>'+esc(full)+'</b></div></div>'+
+        '<button class="btn b-ok" id="fNo">لأ، رجّعني</button><button class="btn b-badx" id="fYes" style="margin-top:8px">أيوه، الغي الشحنة</button>',()=>{
+        $('fNo').onclick=close; $('fYes').onclick=()=>call('rpc_track_cancel',{p_token:tok,p_reason:full},'طلب الإلغاء وصل للإدارة');
+      });
+    };
+  });
+}
+let stars=0;
+function rateBox(){
+  if(!D.can_rate) return (D.rating||D.feedback)?'<div class="card g" style="text-align:center">شكرًا، رأيك وصل للإدارة 🙏</div>':'';
+  return '<div class="card" style="text-align:center"><b>رأيك يهمّنا</b><div class="stars" id="st">'+[1,2,3,4,5].map(i=>'<button aria-label="'+i+' من ٥" data-i="'+i+'">★</button>').join('')+'</div>'+
+    '<textarea id="fb" maxlength="500" placeholder="عايز تقول حاجة عن الشحنة؟ (اختياري)"></textarea><button class="btn b-ghost" id="fbOk">ابعت رأيك</button></div>';
+}
+function bindRate(){
+  const st=$('st'); if(!st) return;
+  st.querySelectorAll('button').forEach(b=>b.onclick=()=>{stars=+b.dataset.i;st.querySelectorAll('button').forEach(x=>x.classList.toggle('on',+x.dataset.i<=stars));});
+  $('fbOk').onclick=()=>{ if(!stars&&!$('fb').value.trim()){toast('قيّم أو اكتب رأيك الأول',true);return;}
+    call('rpc_track_feedback',{p_token:tok,p_rating:stars||null,p_text:$('fb').value},'رأيك وصل، شكرًا ليك'); };
+}
+load();
+// 🧪 تحديث كل ٢٠ ثانية عشان تغييرات لوحة التجربة تبان
+setInterval(()=>{ if(!document.hidden && !$('sh').className && !busy && !(document.activeElement&&document.activeElement.id==='fb')) load(); },20000);
+})();
+</script>
+</body>
+</html>
