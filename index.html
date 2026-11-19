@@ -107,7 +107,7 @@ $('shBg').onclick=close; document.addEventListener('keydown',e=>{if(e.key==='Esc
 
 async function call(fn,args,okMsg){
   if(busy) return; busy=true;
-  try{ const r=await rpc(fn,args); if(r&&r.state) D=r; close(); render(); if(okMsg) toast(okMsg); }
+  try{ const r=await rpc(fn,args); if(r&&r.state) D=r; close(); render(); if(okMsg) toast(okMsg); try{ if(parent!==window) parent.postMessage('dx-sync','*'); }catch(_){} }
   catch(e){ toast(e.message,true); }
   finally{ busy=false; }
 }
@@ -267,6 +267,7 @@ function bindRate(){
 }
 load();
 // 🧪 تحديث كل ٢٠ ثانية عشان تغييرات لوحة التجربة تبان
+addEventListener('message',e=>{ if(e.data==='dx-reload' && !$('sh').className && !busy) load(); });
 setInterval(()=>{ if(!document.hidden && !$('sh').className && !busy && !(document.activeElement&&document.activeElement.id==='fb')) load(); },20000);
 })();
 </script>

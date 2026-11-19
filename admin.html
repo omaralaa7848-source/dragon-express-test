@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>🧪 [تجريبي] لوحة الأدمن — Dragon Express</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="dx.css">
+<style>
+.shell{display:flex;min-height:calc(100vh - 24px)}
+.side{width:236px;flex:none;background:var(--bg2);border-left:1px solid var(--line);padding:14px 10px;position:sticky;top:24px;height:calc(100vh - 24px);overflow:auto}
+.brand{display:flex;align-items:center;gap:9px;padding:2px 6px 14px}
+.brand img{width:38px;height:38px;border-radius:10px}.brand b{font-size:15px;font-weight:900;display:block}.brand span{font-size:11px;color:var(--mut)}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:12px;color:var(--mut);font-weight:700;font-size:13px;cursor:pointer}
+.ni:hover{background:var(--surf)}.ni.on{background:rgba(245,146,43,.13);color:var(--acc)}
+.ni .bd{margin-inline-start:auto;background:var(--bad);color:#fff;border-radius:10px;font-size:10.5px;font-weight:900;padding:0 7px}
+.gh{font-size:10.5px;color:var(--mut2);font-weight:800;margin:12px 10px 4px}
+.main{flex:1;min-width:0;padding:16px 18px 40px}
+h1{font-size:20px;margin:0 0 4px;font-weight:900}.lead{color:var(--mut);margin:0 0 14px;font-size:12.5px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:12px;padding:12px;border:1px solid var(--line);border-radius:18px}
+.kpi{cursor:pointer}.kpi.sel{outline:2px solid var(--acc)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chip{border:1px solid var(--line2);background:var(--surf);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:800;color:var(--mut)}
+.chip.on{background:var(--acc);border-color:var(--acc);color:var(--accOn)}
+table{width:100%;border-collapse:separate;border-spacing:0 6px}
+th{font-size:11px;color:var(--mut);text-align:right;font-weight:800;padding:0 10px}
+td{background:var(--surf);padding:10px;font-size:12.5px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);white-space:nowrap}
+td:first-child{border-right:1px solid var(--line);border-radius:0 13px 13px 0}td:last-child{border-left:1px solid var(--line);border-radius:13px 0 0 13px}
+tr.r{cursor:pointer}tr.r:hover td{background:var(--surf2)}tr.r.cx td{border-color:rgba(240,85,95,.55)}tr.r.sel td{background:var(--surf3)}
+.ic{display:inline-flex;gap:3px}.ic span{width:22px;height:22px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;background:var(--surf2);border:1px solid var(--line);opacity:.25}.ic span.y{opacity:1}
+.drawer{position:fixed;top:24px;left:0;bottom:0;width:min(460px,100vw);background:var(--bg2);border-right:1px solid var(--line2);z-index:61;overflow:auto;padding:14px 16px 30px;transform:translateX(-105%);transition:transform .22s;box-shadow:12px 0 40px rgba(0,0,0,.4);visibility:hidden}
+.open .drawer{transform:none;visibility:visible}
+.dg{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:12.5px;margin-top:10px}.dg span{color:var(--mut)}
+.tools{border:1px dashed #6b5418;border-radius:14px;padding:10px;margin-top:12px;background:rgba(233,185,73,.05)}
+.tools .lbl{color:#E9B949}
+select.field{padding:7px 9px;font-size:12.5px;width:auto}
+@media(max-width:860px){.side{display:none}.main{padding:12px}td.hm,th.hm{display:none}}
+</style>
+</head>
+<body>
+<div class="testbar">🧪 تجريبي — لوحة الأدمن · بيانات وهمية · <button id="rs" style="background:#1B1200;color:#F2C14E;border:1px solid #6b5418;border-radius:7px;font-weight:800;font-size:11px;padding:0 8px">♻️ رجّع البيانات من الأول</button></div>
+<div class="shell">
+  <aside class="side">
+    <div class="brand"><img src="logo.webp" alt=""><div><b>Dragon Express</b><span>أدمن تجريبي</span></div></div>
+    <div class="ni" data-x>📊 نظرة عامة</div>
+    <div class="ni on">🧾 الأوردرات <span class="bd" id="bd" style="display:none"></span></div>
+    <div class="gh">المخزون</div><div class="ni" data-x>📦 المخزون</div><div class="ni" data-x>📥 استلام شحنة</div><div class="ni" data-x>🚚 تسليم / رد شحنة</div><div class="ni" data-x>↩️ المرتجعات</div>
+    <div class="gh">مستخدمين</div><div class="ni" data-x>👥 المناديب</div><div class="ni" data-x>🏪 الشركات</div>
+    <div class="gh">حسابات</div><div class="ni" data-x>💵 تسليم الفلوس</div><div class="ni" data-x>🏦 المالية والدرج</div><div class="ni" data-x>📈 التقارير</div>
+    <div class="gh">ميزات إضافية</div><div class="ni" data-x>🗺️ متابعة المناديب</div>
+  </aside>
+  <main class="main">
+    <h1>الأوردرات</h1>
+    <p class="lead">نفس شاشة الأوردرات، ومضاف لها اللي العميل عمله من صفحة المتابعة (المتعلّم <span style="color:var(--acc);font-weight:800">جديد</span>). دوس على أي أوردر عشان تفتحه.</p>
+    <div class="kpis newfeat" id="kp"></div>
+    <div class="chips" id="ch"></div>
+    <div style="overflow:auto"><table><thead><tr><th>الكود</th><th>العميل</th><th class="hm">الشركة</th><th class="hm">المنطقة</th><th>المندوب</th><th>الحالة</th><th>المبلغ</th><th>متابعة العميل <span style="color:var(--acc)">● جديد</span></th></tr></thead><tbody id="tb"></tbody></table></div>
+  </main>
+</div>
+<div class="shbg" id="shBg"></div><aside class="drawer" id="dr"><div id="shBody"></div></aside>
+<div class="toast" id="toast"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="config.js"></script>
+<script src="dx.js"></script>
+<script>
+let P=null, F='all', CUR=null;
+const OUT=['with_courier','postponed'];
+const FL={all:['الكل',o=>true],cx:['🛑 طلبات إلغاء',o=>o.cancel==='pending'],conf:['✓ أكّدوا',o=>o.confirmed],wait:['⏳ مستنيين العميل',o=>o.link_sent&&!o.confirmed&&OUT.includes(o.status)],
+  nolink:['💬 اللينك مااتبعتش',o=>!o.link_sent&&OUT.includes(o.status)],out:['🛵 مع المناديب',o=>[...OUT,'partial'].includes(o.status)],wh:['🏢 في المخزن',o=>o.status==='warehouse'],done:['✅ خلصت',o=>['delivered','returned','return_pending','lost'].includes(o.status)]};
+async function load(){
+  try{ P=await rpc('test_panel'); }catch(e){ $('tb').innerHTML='<tr><td colspan="8">❌ '+esc(e.message)+'</td></tr>'; return; }
+  draw(); if(CUR&&document.body.classList.contains('open')&&!(document.activeElement&&document.activeElement.tagName==='SELECT')) openOrder(CUR,true);
+}
+function draw(){
+  const O=P.orders||[], cx=O.filter(FL.cx[1]).length, rated=O.filter(o=>o.rating);
+  $('bd').style.display=cx?'':'none'; $('bd').textContent=fmt(cx);
+  const k=(f,l,v,c,s)=>'<div class="kpi'+(F===f?' sel':'')+'" data-f="'+f+'"><div class="lbl">'+l+'</div><div class="v" style="color:'+c+'">'+v+(s?'<small>'+s+'</small>':'')+'</div></div>';
+  $('kp').innerHTML=k('cx','🛑 طلبات إلغاء مستنية قرارك',fmt(cx),cx?'var(--bad)':'var(--mut)')+k('conf','✓ أكّدوا الاستلام',fmt(O.filter(FL.conf[1]).length),'var(--ok)')+
+    k('wait','⏳ اللينك اتبعت ولسه',fmt(O.filter(FL.wait[1]).length),'var(--warn)')+k('nolink','💬 اللينك مااتبعتش',fmt(O.filter(FL.nolink[1]).length),'var(--mut)')+
+    k('done','⭐ متوسط تقييم العملاء',rated.length?(rated.reduce((s,o)=>s+o.rating,0)/rated.length).toLocaleString('ar-EG',{maximumFractionDigits:1}):'—','var(--warn)',rated.length?'من '+fmt(rated.length):'');
+  $('ch').innerHTML=Object.entries(FL).map(([f,[l,fn]])=>'<button class="chip'+(F===f?' on':'')+'" data-f="'+f+'">'+l+' · '+fmt(O.filter(fn).length)+'</button>').join('');
+  const L=O.filter(FL[F][1]);
+  $('tb').innerHTML=L.length?L.map(o=>{
+    const ic=[['✓',o.confirmed,'أكّد الاستلام'],['📍',o.loc,'حدّد المكان'],['⏰',o.slot_day,'اختار ميعاد'],['📝',o.note,'كتب تعليمات'],['📞',o.phone2,'رقم تاني'],['⭐',o.rating,'قيّم']];
+    return '<tr class="r'+(o.cancel==='pending'?' cx':'')+(o.code===CUR?' sel':'')+'" data-o="'+o.code+'"><td class="mono">'+o.code+'</td><td><b>'+esc(o.customer)+'</b></td><td class="hm">'+esc(o.company)+'</td><td class="hm">'+esc(o.area)+'</td><td>'+esc(o.courier?o.courier.split(' ')[0]:'—')+'</td><td>'+pill(o.status)+'</td><td><b style="color:var(--acc)">'+fmt(o.cod)+'</b> ج</td><td>'+
+      (o.cancel==='pending'?tag('🛑 طلب إلغاء','#F0555F'):'<span class="ic">'+ic.map(x=>'<span class="'+(x[1]?'y':'')+'" title="'+x[2]+'">'+x[0]+'</span>').join('')+'</span>')+'</td></tr>';
+  }).join(''):'<tr><td colspan="8" style="text-align:center;color:var(--mut)">مفيش أوردرات هنا</td></tr>';
+}
+function openOrder(code){
+  const o=P.orders.find(x=>x.code===code); if(!o) return; CUR=code;
+  let h='<div style="display:flex;gap:8px;align-items:flex-start"><div style="flex:1"><div style="font-size:19px;font-weight:900">'+esc(o.customer)+'</div><div class="small mut">'+o.code+' • '+esc(o.company)+'</div></div>'+pill(o.status,1)+'<button class="round" data-a="x">✕</button></div>';
+  if(o.cancel==='pending') h+='<div class="card tight newfeat" style="margin-top:14px;border-color:rgba(240,85,95,.6);background:rgba(240,85,95,.08)"><b style="color:var(--bad)">🛑 العميل طالب يلغي الشحنة</b><div style="margin:5px 0 8px">السبب: «'+esc(o.cancel_reason)+'»</div><div class="small mut" style="margin-bottom:10px">أزرار المندوب مقفولة لحد ما ترد. كلّم العميل الأول وبعدين قرّر:</div>'+
+     '<div style="display:flex;gap:6px;flex-wrap:wrap"><a class="btn" href="tel:'+esc((o.phones||[])[0])+'">📞 كلّمه</a><button class="btn ok" data-a="go">كمّل التوصيل</button><button class="btn bad" data-a="cx">ألغي ورجّع للتاجر</button></div></div>';
+  h+='<div class="dg"><span>المبلغ</span><b>'+fmt(o.cod)+' ج <span class="mut small">(شحن '+fmt(o.ship)+')</span>'+(o.paid_direct?' · 💳 المنتج مدفوع':'')+(o.is_exchange?' · 🔁 استبدال':'')+'</b><span>المندوب</span><b>'+esc(o.courier||'—')+'</b><span>العنوان</span><b style="white-space:normal">'+esc(o.address)+' — '+esc(o.area)+'</b><span>التليفون</span><b class="mono">'+esc((o.phones||[]).join(' · '))+'</b>'+(o.items_total>1?'<span>القطع</span><b>'+fmt(o.items_total)+(o.items_delivered?' (اتسلّم '+fmt(o.items_delivered)+')':'')+'</b>':'')+'</div>';
+  h+=custCard(o,'admin');
+  h+='<div class="card tight newfeat" style="margin-top:14px"><div class="lbl">🔗 لينك متابعة العميل</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;align-items:center"><a class="btn" target="_blank" rel="noopener" href="'+trackLink(o)+'">افتح صفحة العميل ↗</a><button class="btn" data-a="copy">انسخ رسالة الواتساب</button>'+(!o.link_sent?'<button class="btn acc" data-a="send">ابعتهوله</button>':'<span class="tag" style="color:var(--ok)">✓ اتبعت</span>')+'</div></div>';
+  h+='<div class="card tight" style="margin-top:10px"><div class="lbl">🚚 تشغيل</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;align-items:center"><select class="field" id="asg"><option value="">اطلعها مع مندوب…</option>'+(P.couriers||[]).map(k=>'<option value="'+k.id+'">'+esc(k.name)+'</option>').join('')+'</select>'+
+     (o.status!=='warehouse'?'<button class="btn" data-a="store">🏢 رجّعها المخزن</button>':'')+'</div><div class="small mut" style="margin-top:6px;line-height:1.7">لو رجعت المخزن وخرجت مع مندوب تاني: اللينك هو هو، وبيانات العميل بتنتقل للمندوب الجديد، والميعاد بس اللي بيتفتح.</div></div>';
+  h+='<div class="tools"><div class="lbl">🧪 أدوات التجربة (مش في التطبيق)</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px"><select class="field" id="sts"><option value="">غيّر الحالة كأن المندوب عمل…</option><option value="delivered">اتسلّمت</option><option value="postponed">اتأجّلت</option><option value="retship">رجعت — دفع الشحن</option><option value="returned">رجعت — مادفعش</option><option value="with_carrier">مع شريك توصيل</option><option value="lost">فيها مشكلة</option></select><button class="btn" data-a="age">⏩ عدّي ٣ أيام</button></div></div>';
+  h+=(o.events&&o.events.length?'<div class="card tight fill2" style="margin-top:12px"><div class="lbl">🕑 سجل الحركة</div>'+o.events.map(e=>'<div class="small" style="padding:2px 0">• '+esc(e)+'</div>').join('')+'</div>':'');
+  $('shBody').innerHTML=h; document.body.classList.add('open'); initMaps($('shBody')); draw();
+}
+async function doAct(a){
+  const o=P.orders.find(x=>x.code===CUR); if(!o) return;
+  if(a==='x'){ CUR=null; closeSheet(); return draw(); }
+  if(a==='go') return act('test_cancel_decide',{p_code:o.code,p_go:true},'تمام — هنكمّل التوصيل وأزرار المندوب اتفتحت');
+  if(a==='cx'){ if(!confirm('تلغي الشحنة وترجّعها للتاجر؟')) return; return act('test_cancel_decide',{p_code:o.code,p_go:false},'اتلغت — راجعة للتاجر'); }
+  if(a==='copy') return copyWa(o);
+  if(a==='send') return act('test_send_link',{p_code:o.code},'اتبعت للعميل (محاكاة)');
+  if(a==='store') return act('test_back_to_store',{p_code:o.code},'رجعت المخزن — اختار مندوب يطلعها');
+  if(a==='age') return act('test_age',{p_code:o.code},'عدّى ٣ أيام — لو الشحنة خلصت، اللينك بيقفل');
+}
+document.addEventListener('click',e=>{
+  const f=e.target.closest('[data-f]'); if(f){ F=(F===f.dataset.f&&f.classList.contains('kpi'))?'all':f.dataset.f; return draw(); }
+  const r=e.target.closest('tr.r'); if(r) return openOrder(r.dataset.o);
+  const b=e.target.closest('[data-a]'); if(b) return doAct(b.dataset.a);
+  if(e.target.closest('[data-x]')) toast('الشاشة دي زي ما هي في التطبيق — مش جزء من التجربة');
+});
+document.addEventListener('change',e=>{
+  const o=P&&P.orders.find(x=>x.code===CUR); if(!o||!e.target.value) return; const v=e.target.value; e.target.blur();
+  if(e.target.id==='asg') act('test_assign',{p_code:o.code,p_courier:v},'خرجت مع المندوب');
+  if(e.target.id==='sts') act('test_set_status',{p_code:o.code,p_status:v==='retship'?'returned':v,p_collected:v==='retship'?o.ship:null,p_items:null},'الحالة اتغيّرت');
+});
+$('shBg').onclick=()=>{CUR=null;closeSheet();draw();};
+$('rs').onclick=()=>{ if(confirm('ترجّع كل البيانات التجريبية من الأول؟ (كله وهمي — اللينكات هتتغيّر)')){ CUR=null; closeSheet(); act('test_seed',{},'رجعت من الأول'); } };
+// الدرج بيتحدّث وهو مفتوح كمان (عشان تشوف اللي العميل بيعمله لحظيًا)
+addEventListener('message',e=>{ if(e.data==='dx-reload'&&CUR&&!BUSY) load(); });
+load(); setInterval(()=>{ if(!document.hidden&&!BUSY&&!(document.activeElement&&document.activeElement.tagName==='SELECT')) load(); },10000);
+</script>
+</body>
+</html>
