@@ -70218,7 +70218,7 @@ return A.ccd(r)},
 $S:283}
 A.a0Y.prototype={
 H(a){var s=$.bK5(),r=A.bKG(B.bR,B.jF,B.il,!1),q=A.bKG(B.bR,B.jF,B.il,!0)
-return new A.On(s,B.bDE,new A.axX(),"Dragon Express",r,q,B.abZ,B.a_9,B.bmO,B.bku,!1,null)}}
+return new A.On(s,B.bDE,new A.axX(),"\ud83e\uddea [\u062a\u062c\u0631\u064a\u0628\u064a] Dragon Express",r,q,B.abZ,B.a_9,B.bmO,B.bku,!1,null)}}
 A.axX.prototype={
 $2(a,b){return A.a4M(A.c2E(new A.aqy(b==null?B.zx:b,null)),B.be)},
 $S:177}
