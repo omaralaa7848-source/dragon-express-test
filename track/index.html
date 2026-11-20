@@ -173,7 +173,12 @@ function locSheet(){
     '<button class="btn b-flame" id="pOk">أكّد المكان ده</button>', ()=>{
     const c=D.loc?[D.loc.lat,D.loc.lng]:[30.0444,31.2357];
     const m=L.map('map').setView(c,D.loc?17:12);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(m);
+    // CARTO ← Esri ← OSM: لو سيرفر مارجّعش على موبايل العميل بننتقل للي بعده
+    (function(){const src=[['https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19,attribution:'© OpenStreetMap © CARTO'}],
+      ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'© Esri'}],
+      ['https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}]];
+      let i=0,bad=0,ok=0,lay=null;const use=()=>{if(lay)m.removeLayer(lay);bad=0;ok=0;lay=L.tileLayer(src[i][0],src[i][1]).addTo(m);
+      lay.on('tileload',()=>ok++);lay.on('tileerror',()=>{if(++bad>=3&&!ok&&i<src.length-1){i++;use();}});};use();})();
     setTimeout(()=>m.invalidateSize(),60);
     $('gps').onclick=()=>{ if(!navigator.geolocation){toast('الموبايل مش بيدعم تحديد الموقع',true);return;}
       $('gps').textContent='بنحدّد موقعك…';

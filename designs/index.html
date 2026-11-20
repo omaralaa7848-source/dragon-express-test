@@ -151,6 +151,16 @@ let V='A', map=null, hero=null;
 const $=s=>document.querySelector(s);
 const TILES={dark:'https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png',light:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'};
 const ATTR='© OpenStreetMap © CARTO';
+// لو سيرفر الخرايط مارجّعش (حجب/بطء على الموبايل) بننتقل للي بعده لوحدنا
+function addTiles(m,dark){
+  const src=[{u:dark?TILES.dark:TILES.light,o:{subdomains:'abcd',maxZoom:19,attribution:ATTR}},
+    {u:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',o:{maxZoom:19,attribution:'© Esri'}},
+    {u:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',o:{maxZoom:19,attribution:'© OpenStreetMap'}}];
+  let i=0,bad=0,ok=0,lay=null;
+  const use=()=>{ if(lay) m.removeLayer(lay); bad=0; ok=0; lay=L.tileLayer(src[i].u,src[i].o).addTo(m);
+    lay.on('tileload',()=>ok++); lay.on('tileerror',()=>{ if(++bad>=3 && !ok && i<src.length-1){ i++; use(); } }); };
+  use();
+}
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2200)}
 function skeleton(){
   const s=(h,w,m)=>`<div class="sk" style="height:${h}px;width:${w||'100%'};margin:${m||'0 0 12px'}"></div>`;
@@ -197,7 +207,7 @@ function render(){
   s.innerHTML=h;
   setTimeout(()=>{const b=$('#bar');if(b)b.style.width=(D.step/3*76)+'%';},50);
   if(V==='C'){ hero=L.map('hero',{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,touchZoom:false,doubleClickZoom:false}).setView(D.locLL||D.center,14);
-    L.tileLayer(TILES.dark,{subdomains:'abcd',maxZoom:19}).addTo(hero); L.marker(D.locLL||D.center).addTo(hero); }
+    addTiles(hero,true); L.marker(D.locLL||D.center).addTo(hero); }
 }
 function boot(){ if(hero){hero.remove();hero=null;} $('#scr').innerHTML=skeleton(); setTimeout(render,1300); }
 
@@ -212,14 +222,14 @@ function openLoc(){
   $('#ph').classList.add('open');
   setTimeout(()=>{
     map=L.map('lm',{zoomControl:true}).setView(D.locLL||D.center,15);
-    L.tileLayer(dark?TILES.dark:TILES.light,{subdomains:'abcd',maxZoom:19,attribution:ATTR}).addTo(map);
+    addTiles(map,dark);
     map.on('movestart',()=>$('.map').classList.add('moving'));
     map.on('moveend',()=>{$('.map').classList.remove('moving');rev();});
     rev();
   },380);
   let tm;
   $('#q').oninput=e=>{clearTimeout(tm);const v=e.target.value.trim();if(v.length<2){$('#res').classList.remove('on');return;}
-    tm=setTimeout(async()=>{try{const c=map.getCenter();const r=await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(v)}&limit=6&lat=${c.lat}&lon=${c.lng}&bbox=24.7,22,36.9,31.7`);const j=await r.json();
+    tm=setTimeout(async()=>{try{const c=map.getCenter();const r=await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(v)}&limit=6&lat=${c.lat}&lon=${c.lng}&bbox=24.7,22,36.9,31.7&lang=default`);const j=await r.json();
       $('#res').innerHTML=(j.features||[]).map(f=>{const p=f.properties;const t=[p.name,p.street,p.district||p.locality,p.city].filter(Boolean).join('، ');return `<div data-ll="${f.geometry.coordinates[1]},${f.geometry.coordinates[0]}">${t||'مكان'}</div>`}).join('')||'<div>مفيش نتايج — جرّب اسم أوضح</div>';
       $('#res').classList.add('on');}catch(_){} },450);};
   $('#res').onclick=e=>{const d=e.target.closest('[data-ll]');if(!d)return;map.setView(d.dataset.ll.split(',').map(Number),17);$('#res').classList.remove('on');$('#q').value=d.textContent;};
@@ -227,7 +237,7 @@ function openLoc(){
   $('#saveLoc').onclick=()=>{const c=map.getCenter();D.locLL=[c.lat,c.lng];D.loc=($('#addr').textContent||'').replace('📍 ','')||'المكان اللي حدّدته';close();render();toast('✓ اتحفظ مكان التسليم');};
 }
 async function rev(){ if(!map)return; const c=map.getCenter(); $('#addr').textContent='بنجيب العنوان…';
-  try{const r=await fetch(`https://photon.komoot.io/reverse?lat=${c.lat}&lon=${c.lng}`);const j=await r.json();const p=((j.features||[])[0]||{}).properties||{};
+  try{const r=await fetch(`https://photon.komoot.io/reverse?lat=${c.lat}&lon=${c.lng}&lang=default`);const j=await r.json();const p=((j.features||[])[0]||{}).properties||{};
     $('#addr').textContent='📍 '+([p.name,p.street&&(p.street+(p.housenumber?' '+p.housenumber:'')),p.district||p.locality,p.city].filter(Boolean).join('، ')||'مكان على الخريطة');}catch(_){ $('#addr').textContent='📍 مكان على الخريطة'; } }
 function simple(k){
   const cfg={slot:['ميعاد التوصيل','<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">'+['١٠ص – ١ الضهر','١ – ٤ العصر','٤ – ٧ بالليل','٧ – ١٠ بالليل'].map(t=>`<button class="ghost btn2 press" style="margin:0;height:48px;font-size:13.5px" data-v="${t}">${t}</button>`).join('')+'</div>'],
