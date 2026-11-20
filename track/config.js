@@ -1,7 +1,9 @@
 // صفحة متابعة الشحنة للعميل — الاتصال بـSupabase (مفاتيح publishable بس، آمنة).
-// النسخة التجريبية بتتعرف من المسار (/dragon-express-test/) فتتوصّل بالمشروع التجريبي.
+// النسخة التجريبية بتتعرف من المسار أو اسم الموقع فتتوصّل بالمشروع التجريبي.
 (function () {
-  var staging = location.pathname.indexOf('/dragon-express-test/') === 0;
+  // التجريبي: مسار GitHub التجريبي، أو على Cloudflare: staging.… أو أي اسم فيه test
+  var h = location.hostname;
+  var staging = location.pathname.indexOf('/dragon-express-test/') === 0 || h.indexOf('staging.') === 0 || h.indexOf('test') >= 0;
   window.TRK_STAGING = staging;
   window.TEST_CFG = staging
     ? { url: 'https://ykinvgglwxgwvjiuyzvp.supabase.co', key: 'sb_publishable_AaGqeslHcfUL0quj2yl8yw_8CLXONcW' }

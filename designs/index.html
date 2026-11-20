@@ -144,6 +144,7 @@ input,textarea{font-family:inherit}
 </div></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="../track/map.js"></script>
 <script>
 const D={code:'MS-10004',name:'منى',company:'ليفين',due:640,note:'قيمة الشحنة ٥٧٥ + توصيل ٦٥',courier:{name:'سامح عبد الرحمن',phone:'01000000004',rating:'٤٫٩'},
   loc:null,locLL:null,slot:null,inst:'',ph2:'',step:2,center:[30.0444,31.2357]};
@@ -152,15 +153,7 @@ const $=s=>document.querySelector(s);
 const TILES={dark:'https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png',light:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'};
 const ATTR='© OpenStreetMap © CARTO';
 // لو سيرفر الخرايط مارجّعش (حجب/بطء على الموبايل) بننتقل للي بعده لوحدنا
-function addTiles(m,dark){
-  const src=[{u:dark?TILES.dark:TILES.light,o:{subdomains:'abcd',maxZoom:19,attribution:ATTR}},
-    {u:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',o:{maxZoom:19,attribution:'© Esri'}},
-    {u:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',o:{maxZoom:19,attribution:'© OpenStreetMap'}}];
-  let i=0,bad=0,ok=0,lay=null;
-  const use=()=>{ if(lay) m.removeLayer(lay); bad=0; ok=0; lay=L.tileLayer(src[i].u,src[i].o).addTo(m);
-    lay.on('tileload',()=>ok++); lay.on('tileerror',()=>{ if(++bad>=3 && !ok && i<src.length-1){ i++; use(); } }); };
-  use();
-}
+function addTiles(m,dark){ dxBaseMap(m,dark); }
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2200)}
 function skeleton(){
   const s=(h,w,m)=>`<div class="sk" style="height:${h}px;width:${w||'100%'};margin:${m||'0 0 12px'}"></div>`;
@@ -257,7 +250,7 @@ document.addEventListener('click',e=>{
 });
 document.querySelectorAll('.picker [data-v]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.picker [data-v]').forEach(x=>x.classList.remove('on'));b.classList.add('on');V=b.dataset.v;$('#ph').className='phone '+V;close();boot();});
 $('#replay').onclick=boot;
-boot();
+{const q=(new URLSearchParams(location.search).get('v')||'').toUpperCase(); const b=document.querySelector('.picker [data-v="'+q+'"]'); if(b){b.click();} else boot();}
 </script>
 </body>
 </html>
