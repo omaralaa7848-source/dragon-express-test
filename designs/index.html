@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#070B14">
+<title>🧪 تصاميم صفحة متابعة الشحنة — اختار واحد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{font-family:'Cairo',system-ui,sans-serif;background:#05070D;color:#fff;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:0}
+input,textarea{font-family:inherit}
+.picker{position:sticky;top:0;z-index:100;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:10px;background:rgba(5,7,13,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.08)}
+.picker b{width:100%;text-align:center;font-size:12px;color:#F2C14E;font-weight:800}
+.picker button{background:rgba(255,255,255,.08);color:#cfd8e6;border-radius:999px;padding:7px 14px;font-weight:800;font-size:13px;transition:.2s}
+.picker button.on{background:#F5922B;color:#1a0e02;box-shadow:0 6px 20px rgba(245,146,43,.35)}
+.stage{display:flex;justify-content:center;padding:18px 0 40px}
+.phone{width:min(390px,100vw);min-height:780px;position:relative;overflow:hidden;border-radius:44px;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 10px #10141c,0 0 0 11px #2a3242}
+@media(max-width:480px){.stage{padding:0}.phone{border-radius:0;box-shadow:none;min-height:calc(100vh - 92px)}}
+.scr{position:relative;min-height:inherit;padding:16px 16px 130px}
+.in{opacity:0;transform:translateY(14px) scale(.985);animation:up .55s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i,0)*70ms)}
+@keyframes up{to{opacity:1;transform:none}}
+.sk{position:relative;overflow:hidden;border-radius:14px;background:var(--sk,rgba(255,255,255,.07))}
+.sk::after{content:'';position:absolute;inset:0;transform:translateX(100%);background:linear-gradient(90deg,transparent,var(--skh,rgba(255,255,255,.12)),transparent);animation:sh 1.15s infinite}
+@keyframes sh{to{transform:translateX(-100%)}}
+.press{transition:transform .12s}.press:active{transform:scale(.97)}
+.sheetbg{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:.25s;z-index:40}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:41;transform:translateY(105%);transition:transform .42s cubic-bezier(.2,.9,.2,1);border-radius:28px 28px 0 0;padding:10px 16px 24px;max-height:88%;overflow:auto}
+.open .sheetbg{opacity:1;pointer-events:auto}.open .sheet{transform:none}
+.grab{width:42px;height:5px;border-radius:9px;margin:2px auto 12px;background:currentColor;opacity:.25}
+.map{height:300px;border-radius:20px;overflow:hidden;position:relative}
+.map .pin{position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);z-index:500;pointer-events:none;font-size:38px;filter:drop-shadow(0 6px 8px rgba(0,0,0,.35));transition:transform .2s}
+.map.moving .pin{transform:translate(-50%,-125%)}
+.srch{position:relative}
+.res{position:absolute;top:100%;left:0;right:0;z-index:600;border-radius:14px;overflow:hidden;margin-top:6px;display:none}
+.res.on{display:block}
+.res div{padding:11px 14px;font-size:13px;cursor:pointer;border-bottom:1px solid rgba(127,127,127,.15)}
+.toast{position:absolute;left:50%;bottom:26px;transform:translate(-50%,30px);opacity:0;transition:.3s;z-index:90;padding:10px 16px;border-radius:14px;font-weight:800;font-size:13px;white-space:nowrap}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* A — زجاج غامق */
+.A{background:#070B14;color:#EEF3FB;--sk:rgba(255,255,255,.06)}
+.A::before,.A::after{content:'';position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;z-index:0;animation:float 9s ease-in-out infinite alternate;pointer-events:none}
+.A::before{width:260px;height:260px;background:#F5922B;top:-60px;left:-80px}
+.A::after{width:300px;height:300px;background:#2F7FD6;top:260px;right:-120px;animation-delay:-4s}
+@keyframes float{to{transform:translate(30px,40px) scale(1.1)}}
+.A .scr>*{position:relative;z-index:1}
+.A .glass{background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(22px) saturate(160%);-webkit-backdrop-filter:blur(22px) saturate(160%);border-radius:24px;box-shadow:0 10px 30px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.12)}
+.A .mut{color:#9FB0C7}.A .acc{color:#FFB057}
+.A .btn{background:linear-gradient(180deg,#FFA544,#F07E1B);color:#1d0f02;box-shadow:0 10px 24px rgba(245,146,43,.35)}
+.A .ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.16)}
+.A .sheet{background:rgba(14,20,34,.9);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);border-top:1px solid rgba(255,255,255,.12);color:#EEF3FB}
+.A .res{background:#121a2b;border:1px solid rgba(255,255,255,.12)}
+.A .toast{background:rgba(30,40,60,.92);border:1px solid rgba(255,255,255,.15);color:#fff}
+.A .field{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#fff}
+
+/* B — فاتح نضيف iOS */
+.B{background:#F2F3F7;color:#0B1220;--sk:#E3E6EE;--skh:rgba(255,255,255,.75);--stp:#0B1220}
+.B .glass{background:rgba(255,255,255,.95);border-radius:22px;box-shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px rgba(16,24,40,.06)}
+.B .mut{color:#6B7489}.B .acc{color:#E8730C}
+.B .btn{background:#0B1220;color:#fff;box-shadow:0 10px 24px rgba(11,18,32,.25)}
+.B .ghost{background:#EEF0F5;color:#0B1220}
+.B .sheet{background:#fff;color:#0B1220;box-shadow:0 -10px 40px rgba(0,0,0,.12)}
+.B .res{background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+.B .toast{background:#0B1220;color:#fff}
+.B .field{background:#F2F3F7;border:1px solid #E3E6EE;color:#0B1220}
+.B .st.done i{color:#fff}
+
+/* C — الخريطة الأول */
+.C{background:#0A0F1A;color:#EEF3FB;--stp:#5EE6A8}
+.C .scr{padding:0 0 130px}
+.C .hero-map{height:330px;position:relative}
+.C .hero-map .leaflet-container{height:100%;background:#1b2333}
+.C .hero-fade{position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(transparent,#0A0F1A);z-index:400;pointer-events:none}
+.C .float-top{position:absolute;top:14px;left:14px;right:14px;z-index:450;display:flex;justify-content:space-between;align-items:center}
+.C .pill{background:rgba(10,15,26,.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:6px 12px;font-weight:800;font-size:12.5px}
+.C .body{margin-top:-40px;position:relative;z-index:450;padding:0 14px}
+.C .glass{background:rgba(22,30,46,.72);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px}
+.C .mut{color:#98A8BF}.C .acc{color:#5EE6A8}
+.C .btn{background:linear-gradient(180deg,#5EE6A8,#2FC789);color:#03140c;box-shadow:0 10px 24px rgba(94,230,168,.28)}
+.C .ghost{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.14)}
+.C .sheet{background:#0f1626;color:#EEF3FB;border-top:1px solid rgba(255,255,255,.1)}
+.C .res{background:#121a2b;border:1px solid rgba(255,255,255,.12)}
+.C .toast{background:#16202f;color:#fff;border:1px solid rgba(255,255,255,.12)}
+.C .field{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#fff}
+
+/* مكوّنات */
+.hd{display:flex;align-items:center;gap:10px;margin:6px 2px 16px}
+.hd img{width:40px;height:40px;border-radius:12px}
+.hd .t{flex:1;min-width:0}.hd .t b{display:block;font-size:15px;font-weight:900}.hd .t small{font-size:12px;font-weight:700}
+.hello{font-size:26px;font-weight:900;margin:0 2px 2px;line-height:1.35}
+.sub{margin:0 2px 16px;font-size:14px;font-weight:600}
+.card{padding:16px;margin-bottom:12px}
+.steps{display:flex;align-items:flex-start;justify-content:space-between;position:relative;padding:4px 4px 0}
+.steps::before{content:'';position:absolute;top:19px;right:12%;left:12%;height:3px;border-radius:3px;background:rgba(127,127,127,.25)}
+.steps .bar{position:absolute;top:19px;right:12%;height:3px;border-radius:3px;background:var(--stp,#F5922B);width:0;transition:width 1.2s cubic-bezier(.2,.8,.2,1) .4s}
+.st{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;width:25%;font-size:11px;font-weight:800;text-align:center}
+.st i{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:15px;background:rgba(127,127,127,.22);transition:.4s}
+.st.done i{background:var(--stp,#F5922B);color:#160c02}
+.st.now i{animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(245,146,43,.45)}50%{box-shadow:0 0 0 9px rgba(245,146,43,0)}}
+.amt{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.amt .v{font-size:32px;font-weight:900;line-height:1;white-space:nowrap}.amt .v small{font-size:15px;margin-inline-start:4px}
+.row{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;font-weight:700;padding-top:10px;margin-top:10px;border-top:1px solid rgba(127,127,127,.15)}
+.cour{display:flex;align-items:center;gap:12px}
+.av{width:52px;height:52px;flex:none;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:20px;color:#1a0e02;background:linear-gradient(135deg,#FFB057,#F07E1B);box-shadow:0 6px 16px rgba(245,146,43,.35)}
+.cour .nm{flex:1;min-width:0}.cour .nm b{display:block;font-size:16px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cour .nm small{font-size:12.5px;font-weight:700}
+.ic{width:44px;height:44px;flex:none;border-radius:14px;display:grid;place-items:center;font-size:18px;text-decoration:none}
+.sec{font-size:13px;font-weight:800;margin:18px 4px 10px}
+.it{display:flex;align-items:center;gap:12px;padding:14px;margin-bottom:10px;cursor:pointer}
+.it .ix{width:40px;height:40px;flex:none;border-radius:13px;display:grid;place-items:center;font-size:18px;background:rgba(127,127,127,.14)}
+.it .tx{flex:1;min-width:0}.it .tx b{display:flex;align-items:center;gap:6px;font-size:14.5px;font-weight:800;flex-wrap:wrap}
+.it .tx small{display:block;font-size:12.5px;font-weight:600;margin-top:2px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tag{font-size:10.5px;font-weight:800;border-radius:999px;padding:1px 8px;background:rgba(127,127,127,.18)}
+.tag.req{background:#F5922B;color:#1a0e02}
+.tag.ok{background:rgba(94,230,168,.18);color:#2fbf83}
+.it .go{font-size:13px;font-weight:800;padding:8px 14px;border-radius:12px;flex:none}
+.it.done .ix{background:rgba(94,230,168,.18);color:#2fbf83}
+.cta{position:absolute;left:16px;right:16px;bottom:18px;z-index:30}
+.cta .btn{width:100%;height:56px;border-radius:18px;font-size:16px;font-weight:900}
+.cta .lnk{display:block;margin:10px auto 0;background:none;font-size:13px;font-weight:800;color:#ef6b73}
+.field{width:100%;border-radius:14px;padding:13px 14px;font-size:14px;outline:none}
+.btn2{width:100%;height:50px;border-radius:16px;font-size:15px;font-weight:900;margin-top:12px}
+.leaflet-control-attribution{font-size:9px!important}
+</style>
+</head>
+<body>
+<div class="picker">
+  <b>🧪 تصاميم مقترحة لصفحة العميل — بيانات وهمية — اختار اللي يعجبك</b>
+  <button data-v="A" class="on">١) زجاج غامق</button>
+  <button data-v="B">٢) فاتح نضيف (iOS)</button>
+  <button data-v="C">٣) الخريطة الأول</button>
+  <button id="replay">↻ شوف التحميل</button>
+</div>
+<div class="stage"><div class="phone A" id="ph"><div class="scr" id="scr"></div>
+  <div class="sheetbg" id="sbg"></div><div class="sheet" id="sh"><div class="grab"></div><div id="shb"></div></div>
+  <div class="toast" id="toast"></div>
+</div></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="../track/map.js"></script>
+<script>
+const D={code:'MS-10004',name:'منى',company:'ليفين',due:640,note:'قيمة الشحنة ٥٧٥ + توصيل ٦٥',courier:{name:'سامح عبد الرحمن',phone:'01000000004',rating:'٤٫٩'},
+  loc:null,locLL:null,slot:null,inst:'',ph2:'',step:2,center:[30.0444,31.2357]};
+let V='A', map=null, hero=null;
+const $=s=>document.querySelector(s);
+const TILES={dark:'https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png',light:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'};
+const ATTR='© OpenStreetMap © CARTO';
+// لو سيرفر الخرايط مارجّعش (حجب/بطء على الموبايل) بننتقل للي بعده لوحدنا
+function addTiles(m,dark){ dxBaseMap(m,dark); }
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2200)}
+function skeleton(){
+  const s=(h,w,m)=>`<div class="sk" style="height:${h}px;width:${w||'100%'};margin:${m||'0 0 12px'}"></div>`;
+  return (V==='C'?`<div class="sk" style="height:330px;border-radius:0;margin-bottom:12px"></div><div style="padding:0 14px">`:'<div>')+
+    `<div style="display:flex;gap:10px;align-items:center;margin:6px 0 18px">${s(40,'40px','0')}${s(16,'45%','0')}</div>`+
+    s(30,'55%')+s(16,'35%','0 0 18px')+s(96)+s(118)+s(78)+s(70)+s(70)+'</div>';
+}
+function steps(){
+  const L=['اتسجّلت','في المخزن','مع المندوب','اتسلّمت'], ic=['📦','🏬','🛵','✅'];
+  return `<div class="steps"><div class="bar" id="bar"></div>${L.map((l,i)=>`<div class="st ${i<=D.step?'done':''} ${i===D.step?'now':''}"><i>${ic[i]}</i><span>${l}</span></div>`).join('')}</div>`;
+}
+function items(){
+  const it=(k,ix,t,tag,sub,done,act)=>`<div class="glass it in press ${done?'done':''}" style="--i:${k}" data-act="${act}"><div class="ix">${done?'✓':ix}</div><div class="tx"><b>${t} ${tag}</b><small class="mut">${sub}</small></div><button class="go ghost">${done?'غيّر':'حدّد'}</button></div>`;
+  return `<div class="sec in" style="--i:4">كمّل بياناتك <span class="acc">الأول</span> وبعدين أكّد الاستلام</div>`+
+    it(5,'📍','مكان التسليم',D.loc?'<span class="tag ok">تم</span>':'<span class="tag req">مطلوب</span>',D.loc||'مش لازم تكون في البيت — حدّد أي مكان يناسبك',!!D.loc,'loc')+
+    it(6,'🕐','ميعاد التوصيل','<span class="tag">اختياري</span>',D.slot||'خلال اليوم — لو مش هتبقى موجود اختار ميعاد',!!D.slot,'slot')+
+    it(7,'📝','تعليمات للمندوب','<span class="tag">اختياري</span>',D.inst||'رقم الدور، علامة مميزة، اتصل قبل ما توصل…',!!D.inst,'inst')+
+    it(8,'📞','رقم تاني للتواصل','<span class="tag">اختياري</span>',D.ph2||'لو موبايلك مقفول نكلّم مين؟',!!D.ph2,'ph2');
+}
+function courier(i){
+  return `<div class="glass card in" style="--i:${i}"><div class="cour"><div class="av">${D.courier.name[0]}</div>
+   <div class="nm"><b>${D.courier.name}</b><small class="mut">المندوب بتاعك · ⭐ ${D.courier.rating}</small></div>
+   <a class="ic ghost press" href="tel:${D.courier.phone}">📞</a><a class="ic ghost press" href="https://wa.me/2${D.courier.phone}">💬</a></div></div>`;
+}
+function amount(i){
+  return `<div class="glass card in" style="--i:${i}"><div class="amt"><div><div class="mut" style="font-size:13px;font-weight:700">المبلغ المطلوب</div><div class="mut" style="font-size:12px;margin-top:4px">${D.note}</div></div><div class="v acc">${D.due.toLocaleString('ar-EG')}<small>ج</small></div></div>
+   <div class="row"><span class="mut">من</span><span>${D.company}</span></div><div class="row"><span class="mut">فتح الشحنة</span><span>مسموح قبل الدفع ✓</span></div></div>`;
+}
+function render(){
+  const s=$('#scr');
+  const head=`<div class="hd in" style="--i:0"><img src="../track/logo.webp" alt=""><div class="t"><b>Dragon Express</b><small class="mut">${D.code}</small></div></div>`;
+  let h='';
+  if(V==='C'){
+    h=`<div class="hero-map"><div id="hero" style="height:100%"></div><div class="hero-fade"></div>
+       <div class="float-top"><span class="pill">🐉 Dragon Express</span><span class="pill">${D.code}</span></div></div>
+       <div class="body"><div class="hello in" style="--i:0">أهلاً ${D.name} 👋</div><p class="sub mut in" style="--i:1">شحنتك مع المندوب وجاية لك النهاردة</p>
+       <div class="glass card in" style="--i:2">${steps()}</div>${courier(3)}${amount(4)}${items()}</div>`;
+  } else {
+    h=head+`<div class="hello in" style="--i:1">أهلاً أ/ <span class="acc">${D.name}</span></div><p class="sub mut in" style="--i:2">شحنتك مع المندوب وجاية لك النهاردة</p>
+       <div class="glass card in" style="--i:3">${steps()}</div>${amount(3)}${courier(4)}${items()}`;
+  }
+  h+=`<div class="cta in" style="--i:9"><button class="btn press" id="confirm">${D.loc?'تأكيد الاستلام':'حدّد المكان الأول عشان تأكّد'}</button><button class="lnk" id="cancel">الغي الشحنة</button></div>`;
+  if(hero){hero.remove();hero=null;}
+  s.innerHTML=h;
+  setTimeout(()=>{const b=$('#bar');if(b)b.style.width=(D.step/3*76)+'%';},50);
+  if(V==='C'){ hero=L.map('hero',{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,touchZoom:false,doubleClickZoom:false}).setView(D.locLL||D.center,14);
+    addTiles(hero,true); L.marker(D.locLL||D.center).addTo(hero); }
+}
+function boot(){ if(hero){hero.remove();hero=null;} $('#scr').innerHTML=skeleton(); setTimeout(render,1300); }
+
+function openLoc(){
+  const dark=V!=='B';
+  $('#shb').innerHTML=`<h3 style="margin:0 0 4px;font-size:19px;font-weight:900">فين نسلّمك الشحنة؟</h3><p class="mut" style="margin:0 0 12px;font-size:13px">حرّك الخريطة لحد ما الدبوس ييجي على المكان، أو ابحث، أو استخدم موقعك.</p>
+   <button class="ghost btn2 press" id="gps" style="margin:0 0 10px">📍 استخدم موقعي الحالي</button>
+   <div class="srch"><input class="field" id="q" placeholder="ابحث عن شارع، منطقة، أو مكان معروف…" autocomplete="off"><div class="res" id="res"></div></div>
+   <div class="map" style="margin-top:10px"><div id="lm" style="height:100%"></div><div class="pin">📍</div></div>
+   <div class="mut" id="addr" style="font-size:13px;font-weight:700;margin-top:8px;min-height:20px"></div>
+   <button class="btn btn2 press" id="saveLoc">أكّد المكان ده</button>`;
+  $('#ph').classList.add('open');
+  setTimeout(()=>{
+    map=L.map('lm',{zoomControl:true}).setView(D.locLL||D.center,15);
+    addTiles(map,dark);
+    map.on('movestart',()=>$('.map').classList.add('moving'));
+    map.on('moveend',()=>{$('.map').classList.remove('moving');rev();});
+    rev();
+  },380);
+  let tm;
+  $('#q').oninput=e=>{clearTimeout(tm);const v=e.target.value.trim();if(v.length<2){$('#res').classList.remove('on');return;}
+    tm=setTimeout(async()=>{try{const c=map.getCenter();const r=await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(v)}&limit=6&lat=${c.lat}&lon=${c.lng}&bbox=24.7,22,36.9,31.7&lang=default`);const j=await r.json();
+      $('#res').innerHTML=(j.features||[]).map(f=>{const p=f.properties;const t=[p.name,p.street,p.district||p.locality,p.city].filter(Boolean).join('، ');return `<div data-ll="${f.geometry.coordinates[1]},${f.geometry.coordinates[0]}">${t||'مكان'}</div>`}).join('')||'<div>مفيش نتايج — جرّب اسم أوضح</div>';
+      $('#res').classList.add('on');}catch(_){} },450);};
+  $('#res').onclick=e=>{const d=e.target.closest('[data-ll]');if(!d)return;map.setView(d.dataset.ll.split(',').map(Number),17);$('#res').classList.remove('on');$('#q').value=d.textContent;};
+  $('#gps').onclick=()=>navigator.geolocation?navigator.geolocation.getCurrentPosition(p=>map.setView([p.coords.latitude,p.coords.longitude],17),()=>toast('فعّل اللوكيشن من الموبايل'),{enableHighAccuracy:true,timeout:10000}):toast('الموبايل مش بيدعم');
+  $('#saveLoc').onclick=()=>{const c=map.getCenter();D.locLL=[c.lat,c.lng];D.loc=($('#addr').textContent||'').replace('📍 ','')||'المكان اللي حدّدته';close();render();toast('✓ اتحفظ مكان التسليم');};
+}
+async function rev(){ if(!map)return; const c=map.getCenter(); $('#addr').textContent='بنجيب العنوان…';
+  try{const r=await fetch(`https://photon.komoot.io/reverse?lat=${c.lat}&lon=${c.lng}&lang=default`);const j=await r.json();const p=((j.features||[])[0]||{}).properties||{};
+    $('#addr').textContent='📍 '+([p.name,p.street&&(p.street+(p.housenumber?' '+p.housenumber:'')),p.district||p.locality,p.city].filter(Boolean).join('، ')||'مكان على الخريطة');}catch(_){ $('#addr').textContent='📍 مكان على الخريطة'; } }
+function simple(k){
+  const cfg={slot:['ميعاد التوصيل','<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">'+['١٠ص – ١ الضهر','١ – ٤ العصر','٤ – ٧ بالليل','٧ – ١٠ بالليل'].map(t=>`<button class="ghost btn2 press" style="margin:0;height:48px;font-size:13.5px" data-v="${t}">${t}</button>`).join('')+'</div>'],
+    inst:['تعليمات للمندوب','<textarea class="field" id="tv" rows="3" placeholder="الدور التالت، العمارة اللي جنب الصيدلية…"></textarea><button class="btn btn2 press" data-save>حفظ</button>'],
+    ph2:['رقم تاني للتواصل','<input class="field" id="tv" inputmode="tel" placeholder="01xxxxxxxxx"><button class="btn btn2 press" data-save>حفظ</button>']}[k];
+  $('#shb').innerHTML=`<h3 style="margin:0 0 12px;font-size:19px;font-weight:900">${cfg[0]}</h3>${cfg[1]}`; $('#ph').classList.add('open');
+  $('#shb').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.v){D.slot='النهاردة '+b.dataset.v;} else if(b.hasAttribute('data-save')){const v=$('#tv').value.trim();if(!v)return; if(k==='inst')D.inst=v; else D.ph2=v;} else return;
+    close();render();toast('✓ اتحفظ');};
+}
+function close(){$('#ph').classList.remove('open');if(map){map.remove();map=null;}$('#shb').onclick=null;}
+$('#sbg').onclick=close;
+document.addEventListener('click',e=>{
+  const a=e.target.closest('[data-act]'); if(a){ a.dataset.act==='loc'?openLoc():simple(a.dataset.act); return; }
+  if(e.target.id==='confirm'){ if(!D.loc) return openLoc(); toast('✓ استلامك اتأكد — بياناتك اتقفلت'); }
+  if(e.target.id==='cancel') toast('هيظهر تأكيد على خطوتين قبل الإلغاء');
+});
+document.querySelectorAll('.picker [data-v]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.picker [data-v]').forEach(x=>x.classList.remove('on'));b.classList.add('on');V=b.dataset.v;$('#ph').className='phone '+V;close();boot();});
+$('#replay').onclick=boot;
+{const q=(new URLSearchParams(location.search).get('v')||'').toUpperCase(); const b=document.querySelector('.picker [data-v="'+q+'"]'); if(b){b.click();} else boot();}
+</script>
+</body>
+</html>
